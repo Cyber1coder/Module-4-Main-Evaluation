@@ -8,6 +8,14 @@ export const rateLimiter = (req,res,next)=>{
         requests[ip]= [];
     }
 
-    requests[ip] = requests[ip].filter(time => now - time <60000)
+    requests[ip] = requests[ip].filter(time => now - time <60000);
+
+    if(requests[ip].length>=3){
+        return res.status(429).json({
+            message:"Too many requests.Try again later"
+        })
+    }
+    requests[ip].push(now);
+    next();
     
 }
